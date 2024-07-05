@@ -1,6 +1,6 @@
 {
     "name": "mutahirshah/payex-payment",
-    "description": "A Payex payment package for Laravel 11",
+    "description": "A Payex payment package for Laravel 11,current it works for payment process",
     "type": "library",
     "license": "MIT",
     "require": {},
