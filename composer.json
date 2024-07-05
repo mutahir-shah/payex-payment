@@ -1,0 +1,21 @@
+{
+    "name": "mutahirshah/payex-payment",
+    "description": "A Payex payment package for Laravel 11",
+    "type": "library",
+    "license": "MIT",
+    "require": {},
+    "minimum-stability": "dev",
+    "prefer-stable": true,
+    "autoload": {
+        "psr-4": {
+            "Mutahirshah\\PayexPayment\\": "src/"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Mutahirshah\\PayexPayment\\PayexPaymentServiceProvider"
+            ]
+        }
+    }
+}
