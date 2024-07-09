@@ -22,15 +22,15 @@ class PayexPaymentProcessor
 
     public function __construct()
     {
-        $this->apiKey = config('payex.api_username');
-        $this->apiSecret = config('payex.api_secret');
-        $this->sandbox = config('payex.sandbox');
-        $this->return_url = config('payex.return_url');
-        $this->callback_url = config('payex.callback_url');
-        $this->accept_url = config('payex.accept_url');
-        $this->reject_url = config('payex.reject_url');
+        $this->apiKey         = config('payex.api_username');
+        $this->apiSecret      = config('payex.api_secret');
+        $this->sandbox        = config('payex.sandbox');
+        $this->return_url     = config('payex.return_url');
+        $this->callback_url   = config('payex.callback_url');
+        $this->accept_url     = config('payex.accept_url');
+        $this->reject_url     = config('payex.reject_url');
         $this->payex_currency = config('payex.payex_currency');
-        $this->country_code = config('payex.country_code');
+        $this->country_code   = config('payex.country_code');
         // $auth = base64_encode("email:password");
         $this->auth = base64_encode($this->apiKey . ':' . $this->apiSecret);
         $this->apiUrl = 'https://api.payex.io/';
@@ -64,13 +64,13 @@ class PayexPaymentProcessor
         $city             = !empty($data['city']) ? $data['city'] : 'Bandar Makh';
         $state            = !empty($data['state']) ? $data['state'] : 'SGR';
         $amount           = $data['amount'] * 100;
- 
+
         if ($token) {
             try {
 
                 $curl = curl_init();
                 curl_setopt_array($curl, array(
-                    CURLOPT_URL =>   'https://api.payex.io/api/v1/PaymentIntents',
+                    CURLOPT_URL =>   $this->apiUrl . 'api/v1/PaymentIntents',
                     CURLOPT_RETURNTRANSFER => true,
                     CURLOPT_ENCODING => '',
                     CURLOPT_MAXREDIRS => 10,
@@ -88,7 +88,7 @@ class PayexPaymentProcessor
                 $response = curl_exec($curl);
                 curl_close($curl);
                 $result = json_decode($response);
-                $status = $result->result[0]->error; 
+                $status = $result->result[0]->error;
                 $error = false;
                 if ($result->status == '00') {
                     $status                     = $result->message;
@@ -100,7 +100,7 @@ class PayexPaymentProcessor
                     'error'   => $error,
                     'message' => $status,
                     'url'     => $result->result[0]->url
-                ]; 
+                ];
                 return json_encode($data);
             } catch (Exception $e) {
                 $log = "";
