@@ -10,6 +10,7 @@ return [
     "callback_url"    => env('CALLBACK_URL'),
     "accept_url"      => env('ACCEPT_URL'),
     "reject_url"      => env('REJECT_URL'),
+    "payment_type"    => env('PAYMENT_TYPE');//e.g 
     "payex_currency"  => env('PAYEX_CURRENCY', 'MYR'),
     "country_code"    => env('COUNTRY_CODE', 'MY'),
 ];

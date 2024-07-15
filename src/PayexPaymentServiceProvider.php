@@ -22,17 +22,14 @@ class PayexPaymentServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-
         // Publish config files
         $this->publishes([
             __DIR__ . '/../config/payex.php' => config_path('payex.php'),
         ], 'config');
         // Load routes
         $this->loadRoutesFrom(__DIR__ . '/../routes/web.php');
-
         // Load views
         $this->loadViewsFrom(__DIR__ . '/../resources/views', 'payex');
-
         // Load migrations
         $this->loadMigrationsFrom(__DIR__ . '/../database/migrations');
     }

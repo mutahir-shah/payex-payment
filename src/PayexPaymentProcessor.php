@@ -16,9 +16,15 @@ class PayexPaymentProcessor
     protected $callback_url;
     protected $accept_url;
     protected $reject_url;
+    protected $payment_type;
     protected $payex_currency;
     protected $country_code;
-
+    protected $api_get_token_path;
+    protected $api_payment_form;
+    protected $api_mandate_form;
+    protected $api_collections;
+    protected $api_charges;
+    protected $api_query;
 
     public function __construct()
     {
@@ -29,6 +35,7 @@ class PayexPaymentProcessor
         $this->callback_url   = config('payex.callback_url');
         $this->accept_url     = config('payex.accept_url');
         $this->reject_url     = config('payex.reject_url');
+        $this->payment_type   = config('payex.payment_type');
         $this->payex_currency = config('payex.payex_currency');
         $this->country_code   = config('payex.country_code');
         // $auth = base64_encode("email:password");
@@ -37,11 +44,17 @@ class PayexPaymentProcessor
         if ($this->sandbox) {
             $this->apiUrl = 'https://sandbox-payexapi.azurewebsites.net/';
         }
+
+        $this->api_get_token_path = 'api/Auth/Token';
+        $this->api_payment_form = 'api/v1/PaymentIntents';
+        $this->api_mandate_form = 'api/v1/Mandates';
+        $this->api_collections = 'api/v1/Mandates/Collections';
+        $this->api_charges = 'api/v1/Transactions/Charges';
+        $this->api_query = 'api/v1/Transactions';
     }
 
     public function process($amount)
     {
-        // Implement your payment processing logic
         return "Processed payment of $amount.";
     }
 
@@ -63,6 +76,7 @@ class PayexPaymentProcessor
         $postcode         = !empty($data['postcode']) ? $data['postcode'] : '43200';
         $city             = !empty($data['city']) ? $data['city'] : 'Bandar Makh';
         $state            = !empty($data['state']) ? $data['state'] : 'SGR';
+        $payment_type     = !empty($data['payment_type']) ? $data['payment_type'] : $this->payment_type;
         $amount           = $data['amount'] * 100;
 
         if ($token) {
@@ -70,7 +84,7 @@ class PayexPaymentProcessor
 
                 $curl = curl_init();
                 curl_setopt_array($curl, array(
-                    CURLOPT_URL =>   $this->apiUrl . 'api/v1/PaymentIntents',
+                    CURLOPT_URL =>   $this->apiUrl . $this->api_payment_form,
                     CURLOPT_RETURNTRANSFER => true,
                     CURLOPT_ENCODING => '',
                     CURLOPT_MAXREDIRS => 10,
@@ -78,7 +92,7 @@ class PayexPaymentProcessor
                     CURLOPT_FOLLOWLOCATION => true,
                     CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
                     CURLOPT_CUSTOMREQUEST => 'POST',
-                    CURLOPT_POSTFIELDS => '[{"amount": ' . $amount . ',"currency": "' . $currency . '","customer_name": "' . $customer_name . '","email": "' . $customer_email . '","contact_number": "' . $phone_number . '","address": "' . $address . '","postcode": "' . $postcode . '","city": "' . $city . '","state":"' . $state . '","country":"' . $country . '","description": "' . $discription . '" ,"reference_number": "' . $reference_number . '","return_url": "' . $this->return_url  . '","callback_url": "' . $this->callback_url . '","accept_url": "' . $this->accept_url . '","reject_url": "' . $this->reject_url . '"}]',
+                    CURLOPT_POSTFIELDS => '[{"amount": ' . $amount . ',"currency": "' . $currency . '","customer_name": "' . $customer_name . '","email": "' . $customer_email . '","contact_number": "' . $phone_number . '","address": "' . $address . '","postcode": "' . $postcode . '","city": "' . $city . '","state":"' . $state . '","country":"' . $country . '","description": "' . $discription . '" ,"reference_number": "' . $reference_number . '","return_url": "' . $this->return_url  . '","callback_url": "' . $this->callback_url . '","accept_url": "' . $this->accept_url . '","reject_url": "' . $this->reject_url . '","payment_type":"' . $payment_type . '"}]',
                     CURLOPT_HTTPHEADER => array(
                         'Authorization: Bearer ' . $token . '',
                         'Content-Type: application/json',
@@ -119,7 +133,7 @@ class PayexPaymentProcessor
 
             $curl = curl_init();
             curl_setopt_array($curl, array(
-                CURLOPT_URL => $this->apiUrl . 'api/Auth/Token',
+                CURLOPT_URL => $this->apiUrl . $this->api_get_token_path,
                 CURLOPT_RETURNTRANSFER => true,
                 CURLOPT_ENCODING => '',
                 CURLOPT_MAXREDIRS => 10,
