@@ -79,9 +79,13 @@ class PayexPaymentProcessor
         $payment_type     = !empty($data['payment_type']) ? $data['payment_type'] : $this->payment_type;
         $amount           = $data['amount'] * 100;
 
+        $return_url       = !empty($data['return_url']) ? $data['return_url'] : $this->return_url;
+        $callback_url     = !empty($data['callback_url']) ? $data['callback_url'] : $this->callback_url;
+        $accept_url       = !empty($data['accept_url']) ? $data['accept_url'] : $this->accept_url;
+        $reject_url       = !empty($data['reject_url']) ? $data['reject_url'] : $this->reject_url;
+
         if ($token) {
             try {
-
                 $curl = curl_init();
                 curl_setopt_array($curl, array(
                     CURLOPT_URL =>   $this->apiUrl . $this->api_payment_form,
@@ -92,7 +96,7 @@ class PayexPaymentProcessor
                     CURLOPT_FOLLOWLOCATION => true,
                     CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
                     CURLOPT_CUSTOMREQUEST => 'POST',
-                    CURLOPT_POSTFIELDS => '[{"amount": ' . $amount . ',"currency": "' . $currency . '","customer_name": "' . $customer_name . '","email": "' . $customer_email . '","contact_number": "' . $phone_number . '","address": "' . $address . '","postcode": "' . $postcode . '","city": "' . $city . '","state":"' . $state . '","country":"' . $country . '","description": "' . $discription . '" ,"reference_number": "' . $reference_number . '","return_url": "' . $this->return_url  . '","callback_url": "' . $this->callback_url . '","accept_url": "' . $this->accept_url . '","reject_url": "' . $this->reject_url . '","payment_type":"' . $payment_type . '"}]',
+                    CURLOPT_POSTFIELDS => '[{"amount": ' . $amount . ',"currency": "' . $currency . '","customer_name": "' . $customer_name . '","email": "' . $customer_email . '","contact_number": "' . $phone_number . '","address": "' . $address . '","postcode": "' . $postcode . '","city": "' . $city . '","state":"' . $state . '","country":"' . $country . '","description": "' . $discription . '" ,"reference_number": "' . $reference_number . '","return_url": "' . $return_url  . '","callback_url": "' . $callback_url . '","accept_url": "' . $accept_url . '","reject_url": "' . $reject_url . '","payment_type":"' . $payment_type . '"}]',
                     CURLOPT_HTTPHEADER => array(
                         'Authorization: Bearer ' . $token . '',
                         'Content-Type: application/json',
